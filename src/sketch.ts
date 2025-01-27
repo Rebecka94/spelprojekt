@@ -10,8 +10,7 @@ let images: {
   continueImage: p5.Image;
   exitImage: p5.Image;
   repeatImage: p5.Image;
-
-  flower: p5.Image;
+  score: p5.Image;
    cloud: p5.Image;
 
 
@@ -38,7 +37,7 @@ function preload() {
     exitImage: loadImage("/assets/images/exit.png"),
     repeatImage: loadImage("/assets/images/repeat.png"),
      cloud: loadImage("assets/images/cloud.png"),
-  score: loadImage("assets/images/sun.png")
+     score: loadImage("assets/images/sun.png")
 
   };
 }

@@ -17,17 +17,10 @@ class GameWorld implements Scene {
 
     this.initializeClouds(); // Initialize clouds
     this.initializeEntities(); // Initialize player and flowers
+    this.addFlowers(); // Add flowers to the game
   }
 
-  // Initialize clouds with non-overlapping positions
-  private initializeClouds() {
-    const cloudPositions: { x: number; y: number }[] = []; // Track cloud positions
-
-
-    this.initializeClouds();
-    this.addFlowers(); 
-  }
-
+  //
   private addFlowers() {
     const numberOfFlowers = floor(random(5, 7));
     for (let i = 0; i < numberOfFlowers; i++) {
@@ -104,7 +97,7 @@ class GameWorld implements Scene {
       this.gameEntities.push(cloud); // Add cloud to game entities
     }
   }
-
+  }
   private initializeEntities() {
     // Define the positions for the flowers to create a cross pattern
     const flowerPositions = [
@@ -198,25 +191,9 @@ public draw(): void {
 }
 }
 
-  
+
   
     
-  public update() {
-    for (const gameEntitie of this.gameEntities) {
-      gameEntitie.update();
-    }
-    this.checkCollision();
-  }
-   
-    public draw(): void {
-      background("#2a9ec7"); 
-      
-      for (const gameEntitie of this.gameEntities) {
-        gameEntitie.draw();
-        
-        this.score.draw();
-      }
-    }; 
   
-  }
+  
   
