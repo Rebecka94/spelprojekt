@@ -1,91 +1,59 @@
 class GameWorld implements Scene {
-  
   protected gameEntities: Entity[]; // Array for game entities
   private cloudImage: p5.Image;
   private score: Score; // Score instance
+  private cameraY: number; // Vertical offset for scrolling
+  private player: Player; // Reference to the player
 
   constructor() {
-    this.gameEntities = [new Player(), this.createRandomEnemy()];
+    this.gameEntities = [];
     this.cloudImage = images.cloud; // Load the cloud image
+    this.cameraY = 0; // Initialize camera offset
 
     // Initialize the score system
     const scorePosition = createVector(-100, -100); // Position for the score
     this.score = new Score("black", 0, 0, scorePosition, images.score); // Create score instance
-
-
-    this.initializeClouds(); // Initialize clouds
-    this.initializeFlowers(); 
-    // Initialize player and flowers
-  }
-  
-  private createRandomEnemy(): Enemy {
-    const types: ("bird" | "ufo" | "plane")[] = ["bird", "ufo", "plane"];
-    const randomType = random(types); // Slumpa en typ
-    return new Enemy(randomType);
-} 
-  
-  
-  private initializeClouds() {
-    const cloudPositions: { x: number; y: number }[] = []; // To track existing cloud positions
+ 
+    // Initialize other entities
+    this.initializeClouds();
+    this.initializeFlowers();
+    
+    // Add the player to the game entities
+    this.player = new Player();
+    this.gameEntities.push(this.player);
+    this.createRandomEnemy(); 
     
 
+   
+  }
+
+  private createRandomEnemy(): Enemy {
+    const types: ("bird" | "ufo" | "plane")[] = ["bird", "ufo", "plane"];
+    const randomType = random(types); // Randomize enemy type
+    return new Enemy(randomType);
+  }
+
+  private initializeClouds() {
     for (let i = 0; i < 5; i++) {
-      let width = random(50, 150); // Random cloud width
-      let height = random(30, 80); // Random cloud height
-      let x: number = 0, y: number = 0;
-      let validPosition = false;
-
-
-      while (!validPosition) {
-        x = random(0, width + 1200); // Random horizontal position
-        y = random(0, height + 1000); // Random vertical position
-
-
-      
-      // Ensure clouds do not overlap
-      while (!validPosition) {
-        x = random(0, width + 1200);  // Random horizontal position (canvas size + margin)
-        y = random(0, height + 1000); // Random vertical position (canvas size + margin)
-        
-
-        validPosition = cloudPositions.every(pos => {
-          const distance = dist(pos.x, pos.y, x, y);
-          return distance > Math.max(width, height); // Ensure spacing
-        });
-        
-        if (validPosition) {
-          cloudPositions.push({ x, y }); // Store valid position
-        }
-      }
-      // Create a static cloud
-
+      const width = random(50, 150); // Random cloud width
+      const height = random(30, 80); // Random cloud height
+      const x = random(0, width + 1200);
+      const y = random(-height, height + 1000); // Allow clouds above the initial view
       const cloud = new Moln(x, y, width, height, 0, this.cloudImage);
       this.gameEntities.push(cloud); // Add cloud to game entities
     }
   }
-}
-
 
   private initializeFlowers() {
-    // Define the positions for the flowers to create a cross pattern
-    const flowerPositions = [];
-
-  // Generera 5 blommor med horisontell position mellan 30% och 70%
-  for (let i = 0; i < 5; i++) {
-    const x = random(width * 0.3, width * 0.7); // Mellan 30% och 70% av bredden
-    const y = random(0, height); // Hela höjden av skärmen
-    flowerPositions.push(createVector(x, y));
-  }
-  
-    // Create flowers at the defined positions
-    for (const pos of flowerPositions) {
+    for (let i = 0; i < 5; i++) {
+      const x = random(width * 0.3, width * 0.7);
+      const y = random(0, height); // Position flowers randomly in the initial view
       const flower = new Flower();
-      flower.position = pos; // Set flower position to the defined spot
+      flower.position = createVector(x, y);
       this.gameEntities.push(flower);
     }
   }
 
-  // Check collisions between the player and other entities
   private checkCollision() {
     for (const gameEntity of this.gameEntities) {
       if (gameEntity instanceof Player) {
@@ -103,21 +71,6 @@ class GameWorld implements Scene {
   }
 
   private entitiesCollide(o1: Entity, o2: Entity): boolean {
-    if (o2 instanceof Flower) {
-      // Define the center (yellow part) of the flower
-      const flowerCenterX = o2.position.x + o2.size.x / 2;
-      const flowerCenterY = o2.position.y + o2.size.y / 2;
-      const flowerCenterRadius = o2.size.x / 4; // Assume the yellow part is a circle with radius size.x / 4
-  
-      // Check if the player's center is within the flower's center circle
-      const playerCenterX = o1.position.x + o1.size.x / 2;
-      const playerCenterY = o1.position.y + o1.size.y / 2;
-  
-      const distance = dist(playerCenterX, playerCenterY, flowerCenterX, flowerCenterY);
-      return distance <= flowerCenterRadius;
-    }
-  
-    // Default rectangle collision
     return (
       o1.position.x < o2.position.x + o2.size.x &&
       o1.position.x + o1.size.x > o2.position.x &&
@@ -126,35 +79,86 @@ class GameWorld implements Scene {
     );
   }
 
+ 
 
-  public update() {
-    for (const gameEntitie of this.gameEntities) {
-        gameEntitie.update();
-      }
-      this.checkCollision();
-    }
-     
-      public draw(): void {
-        background("#2a9ec7"); 
-        
-        for (const entity of this.gameEntities) {
-              if (!(entity instanceof Player)) {
-                entity.draw();
-              }
-            }
-            
-            // Draw the player last to ensure it appears in front
-            for (const entity of this.gameEntities) {
-              if (entity instanceof Player) {
-                entity.draw();
-              }
-            }
-          
-          this.score.draw();
-        
-      } 
-}
-
-
-
+  private recycleEntities() {
+    for (let i = 0; i < this.gameEntities.length; i++) {
+      const entity = this.gameEntities[i];
   
+      // Reposition entities that move out of the visible area
+      if (entity.position.y < this.cameraY - entity.size.y) {
+        if (entity instanceof Flower) {
+          // Remove the old flower and create a new one above the current view
+          this.gameEntities.splice(i, 1);
+          const newFlower = this.createRandomFlower();
+          this.gameEntities.push(newFlower);
+          i--; // Adjust index
+        } else {
+          // Recycle other entities (e.g., clouds) by repositioning them above the view
+          entity.position.y = this.cameraY + height + random(100, 300);
+          entity.position.x = random(0, width); // Optional: Randomize horizontal position
+        }
+      }
+    }
+  }
+  
+ 
+  // Helper method to create a random flower
+  private createRandomFlower(): Flower {
+    const x = random(width * 0.3, width * 0.7); // Random horizontal position
+    const y = this.cameraY + height + random(100, 300); // Position above the current view
+    const flower = new Flower();
+    flower.position = createVector(x, y); // Set flower's position
+    return flower;
+  }
+
+ 
+
+ public update() {
+     // Update all entities
+  for (const gameEntity of this.gameEntities) {
+    gameEntity.update();
+  }
+
+  // Ensure the camera follows the player
+  const player = this.gameEntities.find(entity => entity instanceof Player) as Player;
+
+  if (player && player.position.y < this.cameraY + height * 0.5) {
+    // Move the camera up when the player reaches the top half of the screen
+    this.cameraY -= (this.cameraY + height * 0.5 - player.position.y) * 0.1; // Smooth movement
+  }
+
+  // Recycle entities when they go out of view
+  this.recycleEntities();
+
+  // Check collisions
+  this.checkCollision();
+  
+  
+  }
+
+
+
+
+
+  public draw(): void {
+    background("#2a9ec7"); // Clear the screen with the background color
+
+  for (const entity of this.gameEntities) {
+    // Adjust entity positions based on cameraY
+    const drawY = entity.position.y - this.cameraY;
+
+    // Only draw entities within the visible screen
+    if (drawY > -entity.size.y && drawY < height) {
+      push();
+      translate(0, -this.cameraY); // Translate based on camera
+      entity.draw();
+      
+      pop();
+    }
+  }
+  
+
+  this.score.draw(); // Always draw the score
+  }
+}

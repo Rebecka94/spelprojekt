@@ -21,6 +21,7 @@ class Game {
     } else if (this.activeScene === "game") {
       this.gameWorld.update();
     }
+   
   }
   
   public draw() {
@@ -31,6 +32,8 @@ class Game {
     } else if (this.activeScene === "game") {
       this.gameWorld.draw();
     }
+     
+
 
   }
   
