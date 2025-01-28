@@ -1,13 +1,13 @@
 class GameWorld implements Scene {
-  protected gameEntities: Entity[]; // Array for game entities
+  protected gameEntities: Entity[]; 
   private cloudImage: p5.Image;
-  private score: Score; // Score instance
+  private score: Score; 
   private cameraY: number; // Vertical offset for scrolling
-  private player: Player; // Reference to the player
+  private player: Player;
 
   constructor() {
     this.gameEntities = [];
-    this.cloudImage = images.cloud; // Load the cloud image
+    this.cloudImage = images.cloud; 
     this.cameraY = 0; // Initialize camera offset
 
     // Initialize the score system
@@ -17,11 +17,11 @@ class GameWorld implements Scene {
     // Initialize other entities
     this.initializeClouds();
     this.initializeFlowers();
-    
+    this.createRandomEnemy(); 
     // Add the player to the game entities
     this.player = new Player();
     this.gameEntities.push(this.player);
-    this.createRandomEnemy(); 
+    
     
 
    
@@ -133,14 +133,14 @@ class GameWorld implements Scene {
 
   public draw(): void {
     background("#2a9ec7"); // Clear the screen with the background color
-
+ push();
   for (const entity of this.gameEntities) {
     // Adjust entity positions based on cameraY
     const drawY = entity.position.y - this.cameraY;
 
     // Only draw entities within the visible screen
     if (drawY > -entity.size.y && drawY < height) {
-      push();
+     
       translate(0, -this.cameraY); // Translate based on camera
       entity.draw();
       
