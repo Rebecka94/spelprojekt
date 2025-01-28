@@ -120,26 +120,16 @@ class GameWorld implements Scene {
     gameEntity.update();
   }
 
-  // Ensure the camera follows the player
-  const player = this.gameEntities.find(entity => entity instanceof Player) as Player;
-
-  if (player && player.position.y < this.cameraY + height * 0.5) {
-    // Move the camera up when the player reaches the top half of the screen
-    this.cameraY -= (this.cameraY + height * 0.5 - player.position.y) * 0.1; // Smooth movement
-  }
 
   // Recycle entities when they go out of view
   this.recycleEntities();
 
   // Check collisions
   this.checkCollision();
+
+  this.createRandomFlower();
   
-  
-  }
-
-
-
-
+}
 
   public draw(): void {
     background("#2a9ec7"); // Clear the screen with the background color
