@@ -12,8 +12,8 @@ class Enemy extends Entity {
     switch (type) {
       case "ufo":
         image = images.ufo;
-        width = 170;
-        height = 100;
+        width = 220;
+        height = 150;
         speedX = random(-5, -2); // Rörelse från höger till vänster
         speedY = random(-1, 1); // Lätt vertikal rörelse
         startX = windowWidth + width; // Start från höger utanför skärmen
@@ -22,10 +22,10 @@ class Enemy extends Entity {
 
       case "plane":
         image = images.plane;
-        width = 140;
-        height = 80;
+        width = 170;
+        height = 110;
         speedX = random(2, 4); // Rörelse från vänster till höger
-        speedY = random(1, 2); // Lätt vertikal rörelse
+        speedY = random(-0.5, 1); // Lätt vertikal rörelse
         startX = -width; // Start från vänster utanför skärmen
         startY = random(height * 0.6, height * 0.9); // Slumpmässig höjd (60% till 90%)
         break;
@@ -33,8 +33,8 @@ class Enemy extends Entity {
       case "bird":
       default:
         image = images.bird;
-        width = 120;
-        height = 120;
+        width = 170;
+        height = 170;
         speedX = random(2, 5); // Rörelse från vänster till höger
         speedY = random(-0.5, 0.5); // Nästan ingen vertikal rörelse
         startX = -width; // Start från vänster utanför skärmen
