@@ -36,14 +36,31 @@ class GameWorld implements Scene {
     setInterval(() => {
       const newEnemy = this.createRandomEnemy();
       this.gameEntities.push(newEnemy);
-    }, 5000); // 5000 ms = 5 sekunder
+    }, 3000); // 5000 ms = 5 sekunder
   }
 
-  private createRandomEnemy(): Enemy {
-    const types: ("bird" | "ufo" | "plane")[] = ["bird", "ufo", "plane"];
-    const randomType = random(types);
-    return new Enemy("bird"); //return new Enemy(randomType); genererar slumpmässiga fienden
-  }
+private createRandomEnemy(): Enemy {
+    if (!this.score) {
+        console.error("ERROR: Score objektet är undefined!");
+        return new Enemy("bird"); // Default så spelet inte kraschar
+    }
+
+    let enemyType: "bird" | "ufo" | "plane";
+
+    if (this.score.currentScore <= 500) {
+        enemyType = "bird";
+    } else if (this.score.currentScore <= 1000) {
+        enemyType = "plane";
+    } else if (this.score.currentScore <= 1500) {
+        enemyType = "ufo";
+    } else {
+        enemyType = "bird"; // Om poängen skulle vara för hög, fall tillbaka till bird
+    }
+
+    console.log(`🛠 Spawning enemy type: ${enemyType} at score: ${this.score.currentScore}`);
+    return new Enemy(enemyType);
+}
+
 
   private initializeClouds() {
     const cloudPositions: { x: number; y: number }[] = [];
@@ -138,20 +155,20 @@ class GameWorld implements Scene {
     }
   }
 
-  private removeOffscreenEnemies() {
-    this.gameEntities = this.gameEntities.filter(entity => {
-      if (entity instanceof Enemy) {
-        const isOffscreen =
-          entity.position.x + entity.size.x < 0 ||
-          entity.position.x > width ||
-          entity.position.y + entity.size.y < 0 ||
-          entity.position.y > height;
+  // private removeOffscreenEnemies() {
+  //   this.gameEntities = this.gameEntities.filter(entity => {
+  //     if (entity instanceof Enemy) {
+  //       const isOffscreen =
+  //         entity.position.x + entity.size.x < 0 ||
+  //         entity.position.x > width ||
+  //         entity.position.y + entity.size.y < 0 ||
+  //         entity.position.y > height;
 
-        return !isOffscreen;
-      }
-      return true;
-    });
-  }
+  //       return !isOffscreen;
+  //     }
+  //     return true;
+  //   });
+  // }
 
   // ADDED: Helper method to spawn additional flowers above the player.
   private spawnFlowersAbovePlayer(playerY: number) {
@@ -174,7 +191,7 @@ class GameWorld implements Scene {
       gameEntitie.update();
     }
     // Remove enemies that has left game area
-    this.removeOffscreenEnemies();
+    // this.removeOffscreenEnemies();
     // Find the player
     const player = this.gameEntities.find(e => e instanceof Player) as Player;
     if (player) {
