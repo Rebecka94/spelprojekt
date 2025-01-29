@@ -2,23 +2,18 @@ class GameWorld implements Scene {
   protected gameEntities: Entity[];
   private cloudImage: p5.Image;
   private score: Score; // Score instance
-
   private cameraOffset: p5.Vector; // We track how to shift the view
   private highestYReached: number; // Track the smallest y-value (the highest point)
+  private pausImg: p5.Image;
 
   constructor() {
     this.gameEntities = [new Player(), this.createRandomEnemy()];
     this.cloudImage = images.cloud; // Load the cloud image
+    this.pausImg = images.pausImg;
 
-    // Initialize the score system
     const scorePosition = createVector(-100, -100); // Position for the score
     this.score = new Score("black", 0, 0, scorePosition, images.score); // Create score instance
-
-
-    // Initialize camera offset
     this.cameraOffset = createVector(0, 0);
-
-    // Initialize highest y to a large number so we can track any new best
     this.highestYReached = Infinity;
 
     this.initializeClouds(); // Initialize clouds
@@ -35,7 +30,7 @@ class GameWorld implements Scene {
 
   private initializeClouds() {
     const cloudPositions: { x: number; y: number }[] = [];
-    
+
     for (let i = 0; i < 5; i++) {
       let width = random(50, 150); // Random cloud width
       let height = random(30, 80); // Random cloud height
@@ -47,8 +42,7 @@ class GameWorld implements Scene {
         x = random(0, width + 1200);
         y = random(0, height + 1000);
 
-        // Ensure clouds do not overlap
-        while (!validPosition) {
+        while (!validPosition) { // Ensure clouds do not overlap
           x = random(0, width + 1200); // Random horizontal position (canvas size + margin)
           y = random(0, height + 1000); // Random vertical position (canvas size + margin)
 
@@ -61,7 +55,6 @@ class GameWorld implements Scene {
             cloudPositions.push({ x, y }); // Store valid position
           }
         }
-        // Create a static cloud
 
         const cloud = new Moln(x, y, width, height, 0, this.cloudImage);
         this.gameEntities.push(cloud); // Add cloud to game entities
@@ -77,14 +70,14 @@ class GameWorld implements Scene {
       const x = random(width * 0.3, width * 0.7); // Mellan 30% och 70% av bredden
       const y = random(0, height); // Hela höjden av skärmen
       flowerPositions.push(createVector(x, y));
+      
+      for (const pos of flowerPositions) {
+        const flower = new Flower();
+        flower.position = pos;
+        this.gameEntities.push(flower);
+      }
     }
-
     // Create flowers at the defined positions
-    for (const pos of flowerPositions) {
-      const flower = new Flower();
-      flower.position = pos;
-      this.gameEntities.push(flower);
-    }
   }
 
   private generateBottomPlatform() {
@@ -117,12 +110,13 @@ class GameWorld implements Scene {
 
   private entitiesCollide(o1: Entity, o2: Entity): boolean {
     const distance = dist(
-      o1.hitBoxPos.x, o1.hitBoxPos.y,
-      o2.hitBoxPos.x, o2.hitBoxPos.y
+      o1.hitBoxPos.x,
+      o1.hitBoxPos.y,
+      o2.hitBoxPos.x,
+      o2.hitBoxPos.y
     ); // dist(x1, y1, x2, y2) räknar ut avståndet mellan två punkter (hitboxarnas mittpunkter).
     return distance <= o1.hitBoxRadius + o2.hitBoxRadius;
-    } // Om avståndet är mindre än eller lika med summan av de två hitboxarnas radier = kollision!
-  
+  } // Om avståndet är mindre än eller lika med summan av de två hitboxarnas radier = kollision!
 
   private checkPlayerFall() {
     const player = this.gameEntities.find((entity) => entity instanceof Player);
@@ -131,20 +125,19 @@ class GameWorld implements Scene {
     }
   }
 
-
   public update() {
     for (const gameEntitie of this.gameEntities) {
       gameEntitie.update();
     }
     // Find the player
-    const player = this.gameEntities.find(e => e instanceof Player) as Player;
+    const player = this.gameEntities.find((e) => e instanceof Player) as Player;
     if (player) {
-
       // We do NOT move horizontally, so cameraOffset.x = 0
       this.cameraOffset.x = 0;
 
       // ONLY follow the player vertically:
-      this.cameraOffset.y = height * 0.7 - (player.position.y + player.size.y / 2);
+      this.cameraOffset.y =
+        height * 0.7 - (player.position.y + player.size.y / 2);
 
       // Check if the player reached a new highest position (smaller y is "higher")
       if (player.position.y < this.highestYReached) {
@@ -155,10 +148,7 @@ class GameWorld implements Scene {
     }
     this.checkPlayerFall();
     this.checkCollision();
-
   }
-
-
 
   public draw(): void {
     background("#2a9ec7");
@@ -173,7 +163,7 @@ class GameWorld implements Scene {
         entity.draw();
       }
     }
-    
+
     // Draw the player on top
     for (const entity of this.gameEntities) {
       if (entity instanceof Player) {
@@ -182,5 +172,13 @@ class GameWorld implements Scene {
     }
     pop();
     this.score.draw();
+
+
+    push();
+    stroke(0); // Färgen på konturen (svart här)
+    strokeWeight(50); // Tjockleken på konturen
+    noFill(); // Fyll inte bilden (bara konturen)
+    image(this.pausImg, width - 40 - 10, 10 + 10, 30, 40);
+    pop();
   }
 }
