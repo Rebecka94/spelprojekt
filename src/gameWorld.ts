@@ -24,7 +24,12 @@ class GameWorld implements Scene {
     this.initializeClouds(); // Initialize clouds
     this.initializeFlowers();
     this.generateBottomPlatform();
-    this.cameraOffset = createVector(0, 0);
+
+      // Skapa en ny fiende var tredje sekund
+    setInterval(() => {
+      const newEnemy = this.createRandomEnemy();
+      this.gameEntities.push(newEnemy);
+    }, 5000); // 5000 ms = 5 sekunder
   }
 
   private createRandomEnemy(): Enemy {
@@ -153,10 +158,14 @@ class GameWorld implements Scene {
   }
 
 
+  }
+
+
   public update() {
     for (const gameEntitie of this.gameEntities) {
       gameEntitie.update();
     }
+    this.removeOffscreenEnemies();
     // Find the player
     const player = this.gameEntities.find(e => e instanceof Player) as Player;
     if (player) {
