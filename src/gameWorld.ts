@@ -172,13 +172,6 @@ class GameWorld implements Scene {
     }
     pop();
     this.score.draw();
-
-
-    push();
-    stroke(0); // Färgen på konturen (svart här)
-    strokeWeight(50); // Tjockleken på konturen
-    noFill(); // Fyll inte bilden (bara konturen)
     image(this.pausImg, width - 40 - 10, 10 + 10, 30, 40);
-    pop();
   }
 }

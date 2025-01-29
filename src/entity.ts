@@ -23,7 +23,7 @@ class Entity {
     this.velocity = createVector(velocityX, velocityY);
     this.image = image;
     this.hitBoxPos = createVector(x + width / 2, y + height / 2); // Räknar ut mitten av entiteten
-    this.hitBoxRadius = Math.min(width, height) * 0.2; // Gör hitboxen mindre än själva objektet genom att ta den minsta av width och height, och sen multiplicera med 0.2
+    this.hitBoxRadius = Math.min(width, height) * 0.3; // Gör hitboxen mindre än själva objektet genom att ta den minsta av width och height, och sen multiplicera med 0.2
   }
   
 

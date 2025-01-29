@@ -68,7 +68,8 @@ class GameOverMenu implements Scene {
   }
 
   private drawTransparent() {
-    fill(255, 255, 255, 120);
+    push()
+    fill(255, 100, 100, 5);
     noStroke();
     rectMode(CENTER);
     rect(
@@ -78,6 +79,7 @@ class GameOverMenu implements Scene {
       this.rectHeight,
       this.cornerRadius
     );
+    pop()
   }
   private drawGameOverText() {
     textFont("Modak");
