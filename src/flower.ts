@@ -4,7 +4,7 @@ class Flower extends Entity {
     super(
       random(0, width - 120),
       random(0, height - 100),
-      120,
+      170,
       100,
       0,
       0,

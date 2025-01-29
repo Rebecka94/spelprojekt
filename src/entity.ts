@@ -3,9 +3,12 @@ class Entity {
   public size: p5.Vector;
   public velocity: p5.Vector;
   protected image: p5.Image;
-  // private hitBoxPos: p5.Vector;
-  // private hitBoxRadius: number;
+  public hitBoxPos: p5.Vector; //Hitboxens position (mitten av entiteten).
+  public hitBoxRadius: number; // Storleken på hitboxen (hur stor cirkeln är).
+
+
 //inför hitbox
+
   constructor(
     x: number,
     y: number,
@@ -19,11 +22,16 @@ class Entity {
     this.size = createVector(width, height);
     this.velocity = createVector(velocityX, velocityY);
     this.image = image;
+    this.hitBoxPos = createVector(x + width / 2, y + height / 2); // Räknar ut mitten av entiteten
+    this.hitBoxRadius = Math.min(width, height) * 0.2; // Gör hitboxen mindre än själva objektet genom att ta den minsta av width och height, och sen multiplicera med 0.2
   }
+  
 
   public update() {
     this.position.x += this.velocity.x;
     this.position.y += this.velocity.y;
+    this.hitBoxPos.set(this.position.x + this.size.x / 2, this.position.y + this.size.y / 2); // Ser till att hitboxen följer med när spelaren rör sig.
+
   }
 
   public draw() {
@@ -35,9 +43,10 @@ class Entity {
       this.size.x,
       this.size.y
     );
-    // noFill();
-    // stroke("red");
-    // circle()
+    noFill();
+    stroke("red");
+    circle(this.hitBoxPos.x, this.hitBoxPos.y, this.hitBoxRadius * 2);
+
     //sätt rn border för att se hitbox
     pop();
   }

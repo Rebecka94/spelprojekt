@@ -1,7 +1,7 @@
 /// <reference path="entity.ts" />
 
 class Player extends Entity {
-  private jumpStrength: number = 8;
+  private jumpStrength: number = 10;
   private gravity: number = 0.2;
   private groundLevel: number;
  
@@ -40,5 +40,9 @@ class Player extends Entity {
 
   public jump() {
     this.velocity.y = -this.jumpStrength;
+    
+    if (this.velocity.y) {
+      music.jumpSound.play();
+    }
   }
 }

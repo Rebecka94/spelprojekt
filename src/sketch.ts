@@ -1,5 +1,8 @@
 //---- GLOBAL VARIABLES ----//
 let game: Game;
+let music: {
+jumpSound: p5.SoundFile;
+};
 
 let images: {
   player: p5.Image;
@@ -22,6 +25,10 @@ let images: {
  * sound files, images etc...
  */
 function preload() {
+  music = {
+  jumpSound: loadSound("/assets/music/jump.mp3")
+}
+
   images = {
     flower: loadImage("/assets/images/flower1.png"),
     player: loadImage("/assets/images/bee.png"),
@@ -48,6 +55,18 @@ function preload() {
 function setup() {
   createCanvas(windowWidth, windowHeight);
   frameRate(60);
+  
+  let audioStarted = false;
+
+  function resumeAudio() {
+    if (!audioStarted) {
+      (getAudioContext() as AudioContext).resume();
+      audioStarted = true;
+      console.log("AudioContext resumed!");
+    }
+  }
+  window.addEventListener("keydown", resumeAudio);
+  window.addEventListener("click", resumeAudio);
 
   game = new Game();
 }
