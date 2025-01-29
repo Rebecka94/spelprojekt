@@ -4,12 +4,10 @@ class GameWorld implements Scene {
   private score: Score; // Score instance
   private cameraOffset: p5.Vector; // We track how to shift the view
   private highestYReached: number; // Track the smallest y-value (the highest point)
-  private pausImg: p5.Image;
 
   constructor() {
     this.gameEntities = [new Player(), this.createRandomEnemy()];
     this.cloudImage = images.cloud; // Load the cloud image
-    this.pausImg = images.pausImg;
 
     const scorePosition = createVector(-100, -100); // Position for the score
     this.score = new Score("black", 0, 0, scorePosition, images.score); // Create score instance
@@ -172,6 +170,5 @@ class GameWorld implements Scene {
     }
     pop();
     this.score.draw();
-    image(this.pausImg, width - 40 - 10, 10 + 10, 30, 40);
-  }
+}
 }
