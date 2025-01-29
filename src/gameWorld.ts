@@ -176,7 +176,6 @@ class GameWorld implements Scene {
     // Remove enemies that has left game area
     this.removeOffscreenEnemies();
     // Find the player
-
     const player = this.gameEntities.find(e => e instanceof Player) as Player;
     if (player) {
       // We do NOT move horizontally, so cameraOffset.x = 0
