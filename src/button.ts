@@ -20,9 +20,9 @@ class Button {
     backgroundColor: string,
     textColor: string,
     font: string,
-    image: p5.Image,
+    textSize: number,
+    image?: p5.Image,
     cornerRadius?: number,
-    textSize: number
   ) {
     this.title = title;
     this.backgroundColor = backgroundColor;

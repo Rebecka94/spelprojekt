@@ -17,8 +17,8 @@ class PauseMenu implements Scene {
       "#d20007",
       "black",
       "Alfa Slab One",
-      this.continueImage,
       0,
+      this.continueImage,
       0
     );
 
@@ -31,8 +31,8 @@ class PauseMenu implements Scene {
       "#d20007",
       "black",
       "Alfa Slab One",
-      this.exitImage,
       0,
+      this.exitImage,
       40
     );
   }

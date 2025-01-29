@@ -20,8 +20,8 @@ class StartMenu implements Scene {
       "#d20007",
       "#fff",
       "Alfa Slab One",
-      undefined,
       50,
+      undefined,
       40
     );
   }

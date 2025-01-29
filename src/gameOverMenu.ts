@@ -28,8 +28,8 @@ class GameOverMenu implements Scene {
       "#d20007",
       "black",
       "Alfa Slab One",
-      this.repeatImage,
       0,
+      this.repeatImage,
       0
     );
 
@@ -42,9 +42,9 @@ class GameOverMenu implements Scene {
       "#d20007",
       "black",
       "Alfa Slab One",
+      40,
       this.exitImage,
       0,
-      40
     );
   }
 
