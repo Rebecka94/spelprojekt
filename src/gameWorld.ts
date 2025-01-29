@@ -157,7 +157,19 @@ class GameWorld implements Scene {
     }
   }
 
+  private removeOffscreenEnemies() {
+    this.gameEntities = this.gameEntities.filter(entity => {
+      if (entity instanceof Enemy) {
+        const isOffscreen =
+          entity.position.x + entity.size.x < 0 ||
+          entity.position.x > width ||
+          entity.position.y + entity.size.y < 0 ||
+          entity.position.y > height;
 
+        return !isOffscreen;
+      }
+      return true;
+    });
   }
 
 
@@ -165,6 +177,7 @@ class GameWorld implements Scene {
     for (const gameEntitie of this.gameEntities) {
       gameEntitie.update();
     }
+    // Remove enemies that has left game area
     this.removeOffscreenEnemies();
     // Find the player
     const player = this.gameEntities.find(e => e instanceof Player) as Player;
