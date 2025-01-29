@@ -35,7 +35,7 @@ class GameWorld implements Scene {
   private createRandomEnemy(): Enemy {
     const types: ("bird" | "ufo" | "plane")[] = ["bird", "ufo", "plane"];
     const randomType = random(types);
-    return new Enemy(randomType);
+    return new Enemy("bird"); //return new Enemy(randomType); genererar slumpmässiga fienden
   }
 
   private initializeClouds() {
