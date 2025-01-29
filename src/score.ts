@@ -2,7 +2,7 @@ class Score {
 
   private color: string; 
   private currentHighScore: number;
-  private currentScore: number;
+  public currentScore: number;
   private position: p5.Vector;
   private image: p5.Image; 
 
