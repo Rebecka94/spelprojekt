@@ -1,10 +1,10 @@
-/// <reference path="entity.ts" />
-
 class Player extends Entity {
   private jumpStrength: number = 10;
   private gravity: number = 0.2;
   private groundLevel: number;
- 
+  private powerUpActive: boolean = false;
+  private powerUpDuration: number = 300; // Lasts for 300 frames (~5 seconds)
+  private powerUpTimer: number = 0;
 
   constructor() {
     super(width * 0.5, height - 120, 100, 140, 0, 0, images.player);
@@ -15,9 +15,9 @@ class Player extends Entity {
     super.update();
 
     if (keyIsDown(LEFT_ARROW)) {
-      this.velocity.x = -5;
+      this.velocity.x = this.powerUpActive ? -8 : -5; // Increase speed when powered up
     } else if (keyIsDown(RIGHT_ARROW)) {
-      this.velocity.x = 5;
+      this.velocity.x = this.powerUpActive ? 8 : 5;
     } else {
       this.velocity.x = 0;
     }
@@ -31,18 +31,31 @@ class Player extends Entity {
     } else if (this.position.x + this.size.x > width) {
       this.position.x = width - this.size.x;
     }
-  
+
     if (this.position.y >= this.groundLevel && this.velocity.y <= 0) {
       this.position.y = this.groundLevel;
       this.velocity.y = -this.jumpStrength;
+    }
+
+    // Handle power-up duration
+    if (this.powerUpActive) {
+      this.powerUpTimer--;
+      if (this.powerUpTimer <= 0) {
+        this.powerUpActive = false;
+      }
     }
   }
 
   public jump() {
     this.velocity.y = -this.jumpStrength;
-    
+
     if (this.velocity.y) {
       music.jumpSound.play();
     }
+  }
+
+  public activatePowerUp() {
+    this.powerUpActive = true;
+    this.powerUpTimer = this.powerUpDuration;
   }
 }

@@ -10,6 +10,7 @@ class Button {
   private cornerRadius?: number;
   private textSize: number;
   private image?: p5.Image;
+  private noBorder: boolean;
 
   constructor(
     title: string,
@@ -22,7 +23,8 @@ class Button {
     font: string,
     image: p5.Image,
     cornerRadius?: number,
-    textSize: number
+    textSize: number,
+    noBorder: boolean = false
   ) {
     this.title = title;
     this.backgroundColor = backgroundColor;
@@ -35,14 +37,19 @@ class Button {
     this.image = image;
     this.x = x;
     this.y = y;
+    this.noBorder = noBorder
   }
 
   public draw() {
     push();
 
-    // Rita rektangeln med rundade hörn
-    stroke("black");
-    strokeWeight(5);
+    if (!this.noBorder) {
+      stroke("black");
+      strokeWeight(5);
+    } else {
+      noStroke();
+    }
+
     fill(this.backgroundColor);
     rectMode(CENTER);
     rect(this.x, this.y, this.width, this.height, this.cornerRadius);
@@ -50,7 +57,7 @@ class Button {
     // Rita eventuell bild (om en är angiven)
     if (this.image) {
       imageMode(CENTER);
-      image(this.image, this.x - this.width / 2 + 20, this.y, 40, 40);
+      image(this.image, this.x - this.width / 2 - 10, this.y, 60, 60);
     }
 
     // Rita knappens text med rätt typsnitt

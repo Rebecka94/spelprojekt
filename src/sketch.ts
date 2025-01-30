@@ -2,6 +2,12 @@
 let game: Game;
 let music: {
 jumpSound: p5.SoundFile;
+backgroundMusic: p5.SoundFile;
+};
+let enemySounds: {
+  bird: p5.SoundFile;
+  ufo: p5.SoundFile;
+  plane: p5.SoundFile;
 };
 
 let images: {
@@ -17,6 +23,7 @@ let images: {
   repeatImage: p5.Image;
   cloud: p5.Image;
   score: p5.Image;
+  star: p5.Image
 };
 
 /**
@@ -26,12 +33,19 @@ let images: {
  */
 function preload() {
   music = {
-  jumpSound: loadSound("/assets/music/jump.mp3")
-}
+  jumpSound: loadSound("/assets/music/jump.mp3"),
+  backgroundMusic: loadSound("/assets/music/background.mp3"),
+  };
+
+  enemySounds = {
+    bird: loadSound("/assets/music/bird.mp3"),
+    ufo: loadSound("/assets/music/ufo.mp3"),
+    plane: loadSound("/assets/music/airplane.mp3"),
+  };
 
   images = {
     flower: loadImage("/assets/images/flower1.png"),
-    player: loadImage("/assets/images/bee.png"),
+    player: loadImage("/assets/images/bee.gif"),
     bird: loadImage("/assets/images/bird.gif"),
     ufo: loadImage("/assets/images/ufo.gif"),
     plane: loadImage("/assets/images/Plane.gif"),
@@ -42,6 +56,7 @@ function preload() {
     repeatImage: loadImage("/assets/images/repeat.png"),
     cloud: loadImage("assets/images/cloud.png"),
     score: loadImage("assets/images/sun.png"),
+    star: loadImage("assets/images/star1.png")
   };
 }
 
@@ -69,6 +84,8 @@ function setup() {
   window.addEventListener("click", resumeAudio);
 
   game = new Game();
+  music.backgroundMusic.loop();
+  music.backgroundMusic.setVolume(0.4);
 }
 
 /**

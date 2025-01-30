@@ -59,3 +59,38 @@ class Score {
     }
   }
 }
+
+
+class FloatingText {
+  position: p5.Vector;
+  text: string;
+  alpha: number;
+  lifespan: number;
+  velocity: p5.Vector;
+
+  constructor(text: string, position: p5.Vector) {
+    this.text = text;
+    this.position = position.copy();
+    this.alpha = 255;  // Fully visible at start
+    this.lifespan = 60; // Lasts for 60 frames (1 second at 60fps)
+    this.velocity = createVector(0, -1); // Move upwards
+  }
+
+  update() {
+    this.position.add(this.velocity);
+    this.alpha -= 4; // Fade out over time
+  }
+
+  draw() {
+    push();
+    fill(255, this.alpha);
+    textSize(40);
+    textAlign(CENTER, CENTER);
+    text(this.text, this.position.x, this.position.y);
+    pop();
+  }
+
+  isExpired() {
+    return this.alpha <= 0;
+  }
+}
