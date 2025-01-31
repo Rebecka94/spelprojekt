@@ -1,42 +1,66 @@
 class Game {
-  private position: p5.Vector;
-  private isCircleVisible: boolean;
+  private startMenu: StartMenu;
+  private gameOverMenu: GameOverMenu;
+  private gameWorld: GameWorld;
+  private activeScene: "start" | "gameover" | "game";
+
+
 
   constructor() {
-    this.position = createVector(width * 0.5, height * 0.5);
-    this.isCircleVisible = false;
+    this.startMenu = new StartMenu(() => this.changeScene("game"));
+    this.gameOverMenu = new GameOverMenu();
+    this. gameWorld = new GameWorld();
+    this.activeScene = "start";
   }
 
+  
   public update() {
-    this.position.set(mouseX, mouseY);
-    this.isCircleVisible = mouseIsPressed;
-  }
-
-  public draw() {
-    background("blue");
-    this.drawText();
-
-    if (this.isCircleVisible) {
-      this.drawCircle();
+    if (this.activeScene === "start") {
+      this.startMenu.update();
+    } else if (this.activeScene === "gameover") {
+      this.gameOverMenu.update();
+    } else if (this.activeScene === "game") {
+      this.gameWorld.update();
     }
   }
+  
+  public draw() {
+    if (this.activeScene === "start") {
+      this.startMenu.draw();
+    } else if (this.activeScene === "gameover") {
+      this.gameOverMenu.draw();
+    } else if (this.activeScene === "game") {
+      this.gameWorld.draw();
+    }
 
-  public drawText() {
-    push();
-    fill("white");
-    textSize(width * 0.1);
-    textStyle("bold");
-    textAlign("center");
-    text("Click & Drag", width * 0.5, height * 0.5);
-    pop();
+  }
+  
+  public changeScene(nextScene: "start" | "gameover" | "game") {
+    if (nextScene === "gameover") {
+      music.backgroundMusic.stop();
+    } else if (nextScene === "game") {
+      if (!music.backgroundMusic.isPlaying()) {
+        music.backgroundMusic.loop();
+      }
+    }
+    
+    this.activeScene = nextScene;
   }
 
-  public drawCircle() {
-    push();
-    fill(0, 255, 0, 200);
-    stroke("white");
-    strokeWeight(width * 0.01);
-    circle(this.position.x, this.position.y, width * 0.2);
-    pop();
+  public resetGame() {
+    this.gameWorld = new GameWorld();
+    this.activeScene = "game";
   }
+  
 }
+
+
+
+
+
+
+
+
+
+
+
