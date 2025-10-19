@@ -1,2 +1,3 @@
 ## 🚀 Live Demo
-[Live Demo](spelprojekt.vercel.app)
+
+👉 [**Try it out here!**](https://spelprojekt.vercel.app/)
